@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -24,16 +25,15 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, nil
 }
 func handler(w http.ResponseWriter, r *http.Request) {
-	webpage, _ := loadPage("page2")
-	fmt.Fprintf(w, string(webpage.Body))
-}
-func randNumber() int {
 	Source := rand.NewSource(time.Now().UnixNano())
 	Generator := rand.New(Source)
-	Number := Generator.Intn(5)
-	return Number
+	Number := Generator.Intn(4) + 1
+	page_name := "page" + strconv.Itoa(Number)
+	webpage, _ := loadPage(page_name)
+	fmt.Fprintf(w, string(webpage.Body))
 }
+
 func main() {
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }
